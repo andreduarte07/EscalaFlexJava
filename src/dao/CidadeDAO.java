@@ -31,8 +31,8 @@ public class CidadeDAO {
     }
     
     public static void excluir(int idCidade){
-        String query = "DELETE FROM cidades" 
-                      +"WHERE id = "+idCidade;
+        String query = "DELETE FROM cidades " 
+                      +" WHERE id = "+idCidade;
         Conexao.executar(query);
     }
   

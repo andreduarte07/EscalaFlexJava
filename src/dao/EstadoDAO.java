@@ -31,8 +31,8 @@ public class EstadoDAO {
     }
     
     public static void excluir(int idEstado){
-        String query = "DELETE FROM estados" 
-                      +"WHERE id = "+idEstado;
+        String query = "DELETE FROM estados " 
+                      +" WHERE id = "+idEstado;
         Conexao.executar(query);
     }
   
