@@ -45,7 +45,7 @@ public class UnidadeDAO {
                       +" cep =          '"+unidade.getCep()            +"' , "
                       +" email =        '"+unidade.getEmail()          +"' , "
                       +" responsavel =  '"+unidade.getResponsavel()    +"' , "
-                      +" codCidade =     "+unidade.getCidade().getId() +"    "
+                      +" codCidade =     "+unidade.getCidade().getId() +"  , "
                       +" codEstado =     "+unidade.getEstado().getId() +"    "
                       +" WHERE id =      "+unidade.getId();
         Conexao.executar(query);

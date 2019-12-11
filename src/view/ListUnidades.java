@@ -6,12 +6,15 @@
 package view;
 
 import dao.CidadeDAO;
+import dao.EstadoDAO;
 import dao.UnidadeDAO;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Cidade;
+import model.Estado;
 import model.Unidade;
 
 /**
@@ -20,13 +23,18 @@ import model.Unidade;
  */
 public class ListUnidades extends javax.swing.JInternalFrame {
 
-
+    List<Integer> cidades, estados;
+    List<Estado> listaEstados;
+    List<Cidade> listaCidades;
     public ListUnidades() {
         initComponents();
         carregarTabela();
+        carregarEstados();
         carregarCidades();
     }
     private void carregarTabela(){
+            cidades = new ArrayList<Integer>();
+            estados = new ArrayList<Integer>();
             List<Unidade> lista = UnidadeDAO.getUnidades();
             String[] colunas = {"Código" , "Nome", "Endereço", "Telefone", "CEP", "E-mail", "Responsavel", "Cidade", "Estado" };
 
@@ -34,6 +42,8 @@ public class ListUnidades extends javax.swing.JInternalFrame {
             model.setColumnIdentifiers( colunas );
 
             for (Unidade uni : lista) {
+                cidades.add(uni.getCidade().getId());
+                estados.add(uni.getEstado().getId());
                 Object[] linha =  {
                     uni.getId(),
                     uni.getNome(),
@@ -80,6 +90,7 @@ public class ListUnidades extends javax.swing.JInternalFrame {
         jLabel6 = new javax.swing.JLabel();
         txtEndereco = new javax.swing.JTextField();
         cmbCidades = new javax.swing.JComboBox<>();
+        cmbEstados = new javax.swing.JComboBox<>();
 
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -173,8 +184,10 @@ public class ListUnidades extends javax.swing.JInternalFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(txtResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(23, 23, 23)
-                                        .addComponent(cmbCidades, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE))
+                                        .addComponent(cmbCidades, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cmbEstados, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnExcluir)
@@ -207,7 +220,7 @@ public class ListUnidades extends javax.swing.JInternalFrame {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel4)
@@ -218,7 +231,8 @@ public class ListUnidades extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbCidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(cmbCidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmbEstados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -262,6 +276,8 @@ public class ListUnidades extends javax.swing.JInternalFrame {
             uni.setCep(txtCep.getText());
             uni.setEmail(txtEmail.getText());
             uni.setResponsavel(txtResponsavel.getText());
+            uni.setCidade( (Cidade) cmbCidades.getSelectedItem());
+            uni.setEstado((Estado) cmbEstados.getSelectedItem());           
             uni.setId((int) tableUnidades.getValueAt(tableUnidades.getSelectedRow(), 0));
             UnidadeDAO.editar(uni);
 
@@ -278,7 +294,7 @@ public class ListUnidades extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_formMouseClicked
     private void carregarCidades(){
-        List<Cidade> listaCidades = CidadeDAO.getCidades();
+         listaCidades = CidadeDAO.getCidades();
         
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         Cidade fake = new Cidade();
@@ -290,6 +306,22 @@ public class ListUnidades extends javax.swing.JInternalFrame {
         }
         cmbCidades.setModel(model);
     }
+    
+    private void carregarEstados(){
+        listaEstados = EstadoDAO.getEstados();
+        
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        Estado fake = new Estado();
+        fake.setId(0);
+        fake.setNome("Selecione...");
+        model.addElement(fake);
+        for (Estado estado : listaEstados){
+            model.addElement(estado);
+        }
+        cmbEstados.setModel(model);
+    }
+    
+    
     private void tableUnidadesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableUnidadesMouseClicked
                if (tableUnidades.getSelectedRow() != -1) {
 
@@ -300,8 +332,23 @@ public class ListUnidades extends javax.swing.JInternalFrame {
             txtCep.setText(tableUnidades.getValueAt(tableUnidades.getSelectedRow(), 4).toString());
             txtEmail.setText(tableUnidades.getValueAt(tableUnidades.getSelectedRow(), 5).toString());
             txtResponsavel.setText(tableUnidades.getValueAt(tableUnidades.getSelectedRow(), 6).toString());
-       
-
+            int cid = cidades.get(tableUnidades.getSelectedRow());
+            int est = estados.get(tableUnidades.getSelectedRow());
+            
+                   for (int i=0; i< listaCidades.size(); i++) {
+                       Cidade cidade = listaCidades.get(i);
+                       if (cidade.getId() == cid ){
+                           cmbCidades.setSelectedIndex(i+1);
+                           break;
+                       }
+                   }
+                   for (int i=0; i< listaEstados.size(); i++) {
+                       Estado estado = listaEstados.get(i);
+                       if (estado.getId() == est ){
+                           cmbEstados.setSelectedIndex(i+1);
+                           break;
+                       }
+                   }
         }// TODO add your handling code here:
     }//GEN-LAST:event_tableUnidadesMouseClicked
 
@@ -310,6 +357,7 @@ public class ListUnidades extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JComboBox<String> cmbCidades;
+    private javax.swing.JComboBox<String> cmbEstados;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
